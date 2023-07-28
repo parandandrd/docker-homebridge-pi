@@ -49,14 +49,68 @@ RUN case "$(uname -m)" in \
   && curl -SLOf  https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz \
   && tar -C / -Jxpf /tmp/s6-overlay-${S6_ARCH}.tar.xz
 
-RUN case "$(uname -m)" in \
-    x86_64) FFMPEG_ARCH='x86_64';; \
-    armv7l) FFMPEG_ARCH='armv7l';; \
-    aarch64) FFMPEG_ARCH='aarch64';; \
-    *) echo "unsupported architecture"; exit 1 ;; \
-    esac \
-  && set -x \
-  && curl -Lfs https://github.com/homebridge/ffmpeg-for-homebridge/releases/download/${FFMPEG_VERSION}/ffmpeg-debian-${FFMPEG_ARCH}.tar.gz | tar xzf - -C / --no-same-owner
+RUN sudo apt-get update -qq && sudo apt-get -y install \
+    autoconf \
+    automake \
+    build-essential \
+    cmake \
+    git-core \
+    libass-dev \
+    libfreetype6-dev \
+    libgnutls28-dev \
+    libmp3lame-dev \
+    libsdl2-dev \
+    libtool \
+    libva-dev \
+    libvdpau-dev \
+    libvorbis-dev \
+    libxcb1-dev \
+    libxcb-shm0-dev \
+    libxcb-xfixes0-dev \
+    meson \
+    ninja-build \
+    pkg-config \
+    texinfo \
+    wget \
+    yasm \
+    zlib1g-dev \
+    libunistring-dev \
+    nasm \
+    libx264-dev \
+    libx265-dev libnuma-dev \
+    libvpx-dev \
+    libfdk-aac-dev \
+    libopus-dev && \
+  mkdir -p /opt/ffmpeg_sources /opt/bin && \
+  cd /opt && \
+  wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+  tar xjvf ffmpeg-snapshot.tar.bz2 && \
+  cd ffmpeg && \
+  PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
+  --prefix="$HOME/ffmpeg_build" \
+  --pkg-config-flags="--static" \
+  --extra-cflags="-I$HOME/ffmpeg_build/include" \
+  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
+  --extra-libs="-lpthread -lm" \
+  --ld="g++" \
+  --bindir="$HOME/bin" \
+  --enable-gpl \
+  --enable-gnutls \
+  --enable-libass \
+  --enable-libfdk-aac \
+  --enable-libfreetype \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-libvorbis \
+  --enable-libvpx \
+  --enable-libx264 \
+  --enable-libx265 \
+  --enable-nonfree && \
+  PATH="$HOME/bin:$PATH" make -j4 && \
+  make install && \
+  hash -r && \
+  cd /opt && \
+  rm ffmpeg-snapshot.tar.bz2
 
 RUN case "$(uname -m)" in \
     x86_64) DEB_ARCH='amd64';; \
