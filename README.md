@@ -11,11 +11,11 @@ We have moved the hosting of the offical homebridge docker image from **oznu/hom
 
 This Ubuntu Linux based Docker image allows you to run [Nfarina's](https://github.com/nfarina) [Homebridge](https://github.com/homebridge/homebridge) on your home network which emulates the iOS HomeKit API.
 
-This is a multi-arch image and will run on x86_64, Raspberry Pi 2, 3, 4, Zero 2 W, or other Docker-enabled ARMv7/8 devices. Docker will automatically pull the correct image for your system.
+This image is optimized specifically for the Raspberry Pi 4 by containing a handbuilt FFMPEG binary that enables hardware video acceleration. This is the only modification made to the original Docker image. If you're not planning on using the video hardware encoding on the Pi for transcoding video within Homebridge, you don't need to use this.
 
 | Image Tag             | Architectures           | Base Image         | 
 | :-------------------- | :-----------------------| :----------------- | 
-| latest, ubuntu        | amd64, arm32v7, arm64v8 | Ubuntu 22.04       | 
+| latest                | arm64v8                 | Ubuntu 22.04       | 
 
 ## Step-By-Step Guides
 
