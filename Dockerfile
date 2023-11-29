@@ -8,8 +8,8 @@ LABEL org.opencontainers.image.licenses="GPL-3.0"
 
 # update to latest releases prior to release
 
-ENV HOMEBRIDGE_PKG_VERSION=1.0.34 \
-  FFMPEG_VERSION=v0.1.0
+ENV HOMEBRIDGE_PKG_VERSION=1.1.4 \
+  FFMPEG_VERSION=v2.1.1
 
 ENV S6_OVERLAY_VERSION=3.1.1.2 \
  S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
@@ -29,7 +29,7 @@ RUN set -x \
   && locale-gen en_US.UTF-8 \
   && ln -snf /usr/share/zoneinfo/Etc/GMT /etc/localtime && echo Etc/GMT > /etc/timezone \
   && apt-get install -y python3 python3-pip python3-setuptools git make g++ libnss-mdns \
-    avahi-discover libavahi-compat-libdnssd-dev \
+    avahi-discover libavahi-compat-libdnssd-dev python3-venv python3-dev \
   && pip3 install tzupdate \
   && chmod 4755 /bin/ping \
   && apt-get clean \
